@@ -1,0 +1,31 @@
+name: Code style
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  lint-checker:
+    runs-on: appsec
+    container:
+      image: node:18
+    steps:
+      - name: Repository Checkout
+        uses: actions/checkout@v4
+      - name: Install markdownlint-cli
+        run: npm install -g markdownlint-cli
+      - name: Run markdownlint
+        run: find . -name "*.md" -type f -exec markdownlint --config .markdownlint.json {} +
+
+  spell-checker:
+    runs-on: appsec
+    container:
+      image: node:18
+    steps:
+      - name: Repository Checkout
+        uses: actions/checkout@v4
+      - name: Install markdown-spellcheck
+        run: npm install -g markdown-spellcheck
+      - name: Run mdspell
+        run: mdspell -t .spelling -r -n -a --en-gb '**/*.md' '!**/MAINTAINERS.md'

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  lint:
+    build:
+      context: .
+      target: lint
+    command: find -name "*.md" -type f -exec markdownlint --fix --config .markdownlint.json {} +
+    volumes:
+      - .:/app
+
+  spellcheck:
+    build:
+      context: .
+      target: spellcheck
+    command: mdspell -t .spelling -r -n -a --en-gb '**/*.md' '!**/MAINTAINERS.md'
+    volumes:
+      - .:/workdir
+
+  site:
+    build:
+      context: .
+      target: site
+    ports:
+      - "3000:80"
